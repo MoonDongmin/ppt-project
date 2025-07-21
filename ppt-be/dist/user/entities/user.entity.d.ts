@@ -1,8 +1,6 @@
-export declare class User {
+import { BaseTable } from 'src/common/entity/base-entity';
+export declare class User extends BaseTable {
     id: number;
     email: string;
     password: string;
-    createdAt: Date;
-    updatedAt: Date;
-    version: number;
 }

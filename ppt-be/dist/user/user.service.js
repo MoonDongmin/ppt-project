@@ -17,24 +17,33 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("./entities/user.entity");
 const typeorm_2 = require("typeorm");
+const bcrypt = require("bcrypt");
 let UserService = class UserService {
     constructor(userRepository) {
         this.userRepository = userRepository;
     }
     async create(createUserDto) {
-        const exist = await this.userRepository.findOne({
+        const user = await this.userRepository.findOne({
             where: {
                 email: createUserDto.email,
             },
         });
-        if (exist) {
+        if (user) {
             throw new common_1.BadRequestException(`존재하는 사용자 입니다.`);
         }
-        const user = this.userRepository.create(createUserDto);
-        return this.userRepository.save(user);
+        const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+        await this.userRepository.save({
+            ...createUserDto,
+            password: hashedPassword,
+        });
+        return this.userRepository.findOne({
+            where: {
+                email: createUserDto.email,
+            },
+        });
     }
-    findAll() {
-        return this.userRepository.find();
+    async findAll() {
+        return await this.userRepository.find();
     }
     async findOne(id) {
         const user = await this.userRepository.findOne({

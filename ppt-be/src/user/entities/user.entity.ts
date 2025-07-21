@@ -1,14 +1,12 @@
+import { BaseTable } from 'src/common/entity/base-entity';
 import {
   Column,
-  CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
-  VersionColumn,
 } from 'typeorm';
 
 @Entity()
-export class User {
+export class User extends BaseTable {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -17,13 +15,4 @@ export class User {
 
   @Column()
   password: string;
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
-
-  @VersionColumn()
-  version: number;
 }

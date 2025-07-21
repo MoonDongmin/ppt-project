@@ -9,25 +9,25 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.User = void 0;
-const base_entity_1 = require("../../common/entity/base-entity");
+exports.BaseTable = void 0;
 const typeorm_1 = require("typeorm");
-let User = class User extends base_entity_1.BaseTable {
-};
-exports.User = User;
+const class_transformer_1 = require("class-transformer");
+class BaseTable {
+}
+exports.BaseTable = BaseTable;
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)(),
+    (0, typeorm_1.CreateDateColumn)(),
+    (0, class_transformer_1.Exclude)(),
+    __metadata("design:type", Date)
+], BaseTable.prototype, "createdAt", void 0);
+__decorate([
+    (0, typeorm_1.UpdateDateColumn)(),
+    (0, class_transformer_1.Exclude)(),
+    __metadata("design:type", Date)
+], BaseTable.prototype, "updatedAt", void 0);
+__decorate([
+    (0, typeorm_1.VersionColumn)(),
+    (0, class_transformer_1.Exclude)(),
     __metadata("design:type", Number)
-], User.prototype, "id", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], User.prototype, "email", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], User.prototype, "password", void 0);
-exports.User = User = __decorate([
-    (0, typeorm_1.Entity)()
-], User);
-//# sourceMappingURL=user.entity.js.map
+], BaseTable.prototype, "version", void 0);
+//# sourceMappingURL=base-entity.js.map
