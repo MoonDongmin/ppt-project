@@ -15,25 +15,33 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
-const local_strategy_1 = require("./strategy/local.strategy");
+const authorization_decorator_1 = require("../common/decorator/authorization.decorator");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
-    async login(req) {
-        const { password, ...user } = req.user;
-        return user;
+    async login(rawToken) {
+        return this.authService.login(rawToken);
+    }
+    register(rawToken) {
+        return this.authService.register(rawToken);
     }
 };
 exports.AuthController = AuthController;
 __decorate([
-    (0, common_1.UseGuards)(local_strategy_1.LocalAuthGuard),
     (0, common_1.Post)('login'),
-    __param(0, (0, common_1.Request)()),
+    __param(0, (0, authorization_decorator_1.Authorization)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
+__decorate([
+    (0, common_1.Post)('register'),
+    __param(0, (0, authorization_decorator_1.Authorization)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "register", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])

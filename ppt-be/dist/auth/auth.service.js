@@ -18,11 +18,45 @@ const typeorm_1 = require("@nestjs/typeorm");
 const user_entity_1 = require("../user/entities/user.entity");
 const typeorm_2 = require("typeorm");
 const bcrypt = require("bcrypt");
+const user_service_1 = require("../user/user.service");
 let AuthService = class AuthService {
-    constructor(userRepository) {
+    constructor(userRepository, userService) {
         this.userRepository = userRepository;
+        this.userService = userService;
     }
     async login(rawToken) {
+        const { email, password } = this.parseBasicToken(rawToken);
+        const user = await this.authenticate(email, password);
+        return {
+            user: email,
+        };
+    }
+    async register(rawToken) {
+        const { email, password } = this.parseBasicToken(rawToken);
+        return this.userService.create({
+            email,
+            password,
+        });
+    }
+    parseBasicToken(rawToken) {
+        const basicSplit = rawToken.split(' ');
+        if (basicSplit.length !== 2) {
+            throw new common_1.UnauthorizedException('잘못된 토큰 형식입니다.');
+        }
+        const [basic, token] = basicSplit;
+        if (basic.toLowerCase() !== 'basic') {
+            throw new common_1.BadRequestException('잘못된 토큰 형식입니다.');
+        }
+        const decoded = Buffer.from(token, 'base64').toString('utf-8');
+        const tokenSplit = decoded.split(':');
+        if (tokenSplit.length !== 2) {
+            throw new common_1.BadRequestException('잘못된 토큰 형식입니다.');
+        }
+        const [email, password] = tokenSplit;
+        return {
+            email,
+            password,
+        };
     }
     async authenticate(email, password) {
         const user = await this.userRepository.findOne({
@@ -44,6 +78,7 @@ exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        user_service_1.UserService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map
