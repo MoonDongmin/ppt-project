@@ -8,6 +8,9 @@ import { User } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UserService } from '../user/user.service';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { RegisterDto } from './dto/register-dto';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +18,8 @@ export class AuthService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly userService: UserService,
+    private readonly configService: ConfigService,
+    private readonly jwtService: JwtService,
   ) {}
 
   async login(rawToken: string) {
@@ -23,14 +28,16 @@ export class AuthService {
     const user = await this.authenticate(email, password);
 
     return {
-      user: email,
+      refreshToken: await this.makeToken(user, true),
+      accessToken: await this.makeToken(user, false),
     };
   }
 
-  async register(rawToken: string) {
+  async register(rawToken: string, registerDto: RegisterDto) {
     const { email, password } = this.parseBasicToken(rawToken);
 
     return this.userService.create({
+      ...registerDto,
       email,
       password,
     });
@@ -69,6 +76,9 @@ export class AuthService {
       where: {
         email,
       },
+      select: {
+        password: true,
+      },
     });
 
     if (!user) {
@@ -82,5 +92,25 @@ export class AuthService {
     }
 
     return user;
+  }
+
+  async makeToken(
+    user: { id: number; nickname: string },
+    isRefreshToken: boolean,
+  ) {
+    const refreshTokenSecret = this.configService.get<string>('JWT_REFRESH');
+    const accessTokenSecret = this.configService.get<string>('JWT_ACCESS');
+
+    return this.jwtService.signAsync(
+      {
+        sub: user.id,
+        nickname: user.nickname,
+        type: isRefreshToken ? 'refresh' : 'access',
+      },
+      {
+        secret: isRefreshToken ? refreshTokenSecret : accessTokenSecret,
+        expiresIn: isRefreshToken ? '24h' : '1h',
+      },
+    );
   }
 }

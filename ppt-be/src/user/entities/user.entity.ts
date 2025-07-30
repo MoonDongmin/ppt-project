@@ -3,12 +3,17 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class User extends BaseTable {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
-  @Column()
+  @Column({
+    select: false,
+  })
   password: string;
+
+  @Column({ unique: true })
+  nickname: string;
 }

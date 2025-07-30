@@ -1,6 +1,6 @@
-import { Strategy } from "passport-local";
-import { AuthService } from "../auth.service";
-import { User } from "src/user/entities/user.entity";
+import { Strategy } from 'passport-local';
+import { AuthService } from '../auth.service';
+import { User } from 'src/user/entities/user.entity';
 declare const LocalAuthGuard_base: import("@nestjs/passport").Type<import("@nestjs/passport").IAuthGuard>;
 export declare class LocalAuthGuard extends LocalAuthGuard_base {
 }

@@ -9,31 +9,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.User = void 0;
-const base_entity_1 = require("../../common/entity/base-entity");
-const typeorm_1 = require("typeorm");
-let User = class User extends base_entity_1.BaseTable {
-};
-exports.User = User;
+exports.RegisterDto = void 0;
+const class_validator_1 = require("class-validator");
+class RegisterDto {
+}
+exports.RegisterDto = RegisterDto;
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)('uuid'),
-    __metadata("design:type", Number)
-], User.prototype, "id", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ unique: true }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
-], User.prototype, "email", void 0);
-__decorate([
-    (0, typeorm_1.Column)({
-        select: false,
-    }),
-    __metadata("design:type", String)
-], User.prototype, "password", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ unique: true }),
-    __metadata("design:type", String)
-], User.prototype, "nickname", void 0);
-exports.User = User = __decorate([
-    (0, typeorm_1.Entity)()
-], User);
-//# sourceMappingURL=user.entity.js.map
+], RegisterDto.prototype, "nickname", void 0);
+//# sourceMappingURL=register-dto.js.map

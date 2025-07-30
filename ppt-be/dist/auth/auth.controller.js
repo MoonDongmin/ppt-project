@@ -16,6 +16,7 @@ exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
 const authorization_decorator_1 = require("../common/decorator/authorization.decorator");
+const register_dto_1 = require("./dto/register-dto");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
@@ -23,8 +24,8 @@ let AuthController = class AuthController {
     async login(rawToken) {
         return this.authService.login(rawToken);
     }
-    register(rawToken) {
-        return this.authService.register(rawToken);
+    register(rawToken, registerDto) {
+        return this.authService.register(rawToken, registerDto);
     }
 };
 exports.AuthController = AuthController;
@@ -38,8 +39,9 @@ __decorate([
 __decorate([
     (0, common_1.Post)('register'),
     __param(0, (0, authorization_decorator_1.Authorization)()),
+    __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, register_dto_1.RegisterDto]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "register", null);
 exports.AuthController = AuthController = __decorate([
